@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../utils/dbConnect';
 import User from '../../../models/User';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -28,13 +29,24 @@ export default async function updateProfile(req: NextApiRequest, res: NextApiRes
       return res.status(400).json({ message: 'User email not found' });
     }
 
+    // Find the user by ID
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     // Update data pengguna
     const updateData: any = { name, email, profileImage };
-    if (password) updateData.password = password;
 
-    // Update profil pengguna berdasarkan email
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: user_id },
+    // Hash the new password if it is being updated
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
+
+    // Update profil pengguna berdasarkan ID
+    const updatedUser = await User.findByIdAndUpdate(
+      user_id,
       updateData,
       { new: true }
     );
