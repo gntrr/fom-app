@@ -1,32 +1,35 @@
-import React, { ReactNode } from "react";
-import Link from "next/link";
-import Head from "next/head";
+import { Flex, Box, useDisclosure } from '@chakra-ui/react';
+import Sidebar from './Sidebar';
+import Navbar from './Navbar';
 
-type Props = {
-  children?: ReactNode;
-  title?: string;
+const Layout = ({ children }) => {
+  // Handle opening and closing of sidebar for mobile view
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <Flex direction="column" h="100vh">
+      {/* Fixed Navbar */}
+      <Navbar onOpenSidebar={onOpen} /> {/* Pass onOpen to Navbar */}
+
+      <Flex flex="1" overflowY="auto"> {/* Allow vertical scrolling */}
+        {/* Sidebar */}
+        <Sidebar isOpen={isOpen} onClose={onClose} /> {/* Pass isOpen and onClose to Sidebar */}
+
+        {/* Main content */}
+        <Box
+          as="main"
+          flex="1"
+          p="2"
+          ml={{ base: '0', md: '250px' }}  /* Sidebar space on larger screens */
+          bg="gray.50"
+          overflowY="auto"
+          pt="64px"
+        >
+          {children}
+        </Box>
+      </Flex>
+    </Flex>
+  );
 };
-
-const Layout = ({ children, title = "This is the default title" }: Props) => (
-  <div>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-    <header>
-      <nav>
-        <Link href="/">Home</Link> | <Link href="/about">About</Link> |{" "}
-        <Link href="/users">Users List</Link> |{" "}
-        <a href="/api/users">Users API</a>
-      </nav>
-    </header>
-    {children}
-    <footer>
-      <hr />
-      <span>I'm here to stay (Footer)</span>
-    </footer>
-  </div>
-);
 
 export default Layout;
