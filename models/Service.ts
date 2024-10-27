@@ -10,7 +10,7 @@ interface Service extends Document {
   availability: string;
 }
 
-const ServiceSchema: Schema = new Schema({
+const ServiceSchema = new mongoose.Schema<Service>({
   name: { type: String, required: true },
   image: { type: String, required: false },
   price: { type: Number, required: true },
@@ -20,4 +20,4 @@ const ServiceSchema: Schema = new Schema({
   availability: { type: String, required: true, enum: ['available', 'not available'] },
 });
 
-export default mongoose.models.Service || mongoose.model<Service>('Service', ServiceSchema);
+export default (mongoose.models.Service as mongoose.Model<Service>) || mongoose.model('Service', ServiceSchema);

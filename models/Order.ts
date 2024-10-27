@@ -12,7 +12,7 @@ interface Order extends Document {
   status: string;
 }
 
-const OrderSchema: Schema = new Schema({
+const OrderSchema = new mongoose.Schema<Order>({
   transactionNumber: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   whatsappNumber: { type: String, required: true },
@@ -24,4 +24,4 @@ const OrderSchema: Schema = new Schema({
   status: { type: String, required: true },
 });
 
-export default mongoose.models.Order || mongoose.model<Order>('Order', OrderSchema);
+export default (mongoose.models.Order as mongoose.Model<Order>) || mongoose.model('Order', OrderSchema);
