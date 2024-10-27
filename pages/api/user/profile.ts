@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../utils/dbConnect';
 import User from '../../../models/User';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
     await dbConnect();
     const user = await User.findById(decoded.userId).select('name email profileImage');
     if (!user) {
