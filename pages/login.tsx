@@ -12,6 +12,7 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
+import { PasswordInput} from '@chakra-ui/react';
 import { showErrorAlert } from '../utils/alerts';
 
 const Login = () => {
@@ -87,7 +88,7 @@ const Login = () => {
               <FormLabel fontSize="sm" color="gray.700">
                 Password
               </FormLabel>
-              <Input
+              <PasswordInput
                 type="password"
                 placeholder="Enter your password"
                 value={password}

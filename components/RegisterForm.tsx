@@ -9,8 +9,8 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
-const CLOUDINARY_UPLOAD_PRESET = process.env.CDN_USER_PRESET // Replace with your Cloudinary upload preset
-const CLOUDINARY_CLOUD_NAME = process.env.CDN_NAME // Replace with your Cloudinary cloud name
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_USER_PRESET // Replace with your Cloudinary upload preset
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME // Replace with your Cloudinary cloud name
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({

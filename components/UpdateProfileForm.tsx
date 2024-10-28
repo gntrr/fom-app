@@ -14,8 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../utils/alerts';
 
-const CLOUDINARY_UPLOAD_PRESET = process.env.CDN_USER_PRESET // Replace with your Cloudinary upload preset
-const CLOUDINARY_CLOUD_NAME = process.env.CDN_NAME // Replace with your Cloudinary cloud name
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_USER_PRESET // Replace with your Cloudinary upload preset
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME // Replace with your Cloudinary cloud name
 
 const UpdateProfileForm = ({ user, onUpdate }) => {
   const [formData, setFormData] = useState({

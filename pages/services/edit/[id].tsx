@@ -8,8 +8,8 @@ import LoadingScreen from '../../../components/LoadingScreen';
 import { LuChevronLeft } from 'react-icons/lu';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 
-const CLOUDINARY_UPLOAD_PRESET = process.env.CDN_SERVICES_PRESET // Replace with your Cloudinary upload preset
-const CLOUDINARY_CLOUD_NAME = process.env.CDN_NAME // Replace with your Cloudinary cloud name
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_SERVICES_PRESET // Replace with your Cloudinary upload preset
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME // Replace with your Cloudinary cloud name
 
 const EditService = () => {
   const [form, setForm] = useState({
