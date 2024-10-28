@@ -1,6 +1,6 @@
 // pages/services/index.tsx
 import { useState, useEffect } from 'react';
-import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Stack, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Text, Spinner } from '@chakra-ui/react';
+import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Stack, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Text, Spinner, Badge } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
@@ -66,61 +66,65 @@ const ServicesList = () => {
       </Head>
       <Layout>
         <Box p="8">
-          <Heading fontSize="2xl" fontWeight="bold" mb="6">Services</Heading>
-          <Button colorScheme="blue" size="md" onClick={() => router.push('/services/add')}>Add New Service</Button>
-          <Table variant="simple" mt="4">
-            <Thead>
-              <Tr>
-                <Th>Image</Th>
-                <Th>Name</Th>
-                <Th>Price</Th>
-                <Th>Availability</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {services.map((service) => (
-                <Tr key={service._id}>
-                  <Td><img src={service.image} alt={service.name} width="50" /></Td>
-                  <Td>
-                    <Popover onOpen={() => fetchServiceDetail(service._id)}>
-                      <PopoverTrigger>
-                        <Button variant="link" colorScheme="blue">{service.name}</Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverHeader fontWeight="bold">{service.name}</PopoverHeader>
-                        <PopoverBody>
-                          {loadingService ? (
-                            <Spinner size="sm" />
-                          ) : selectedService ? (
-                            <>
-                              <Text>Price: Rp. {selectedService.price.toLocaleString()}</Text>
-                              <Text>Availability: {selectedService.availability}</Text>
-                              <Text>Working Days: {selectedService.workingTime} days</Text>
-                              <Text>Description: {selectedService.description}</Text>
-                              <Text>Revisions: {selectedService.revision}</Text>
-                            </>
-                          ) : (
-                            <Text>No details available</Text>
-                          )}
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                  </Td>
-                  <Td>Rp. {service.price.toLocaleString()}</Td>
-                  <Td>{service.availability}</Td>
-                  <Td>
-                    <Stack direction="row" spacing="2">
-                      <Button colorScheme="green" onClick={() => router.push(`/services/edit/${service._id}`)}>Edit</Button>
-                      <Button colorScheme="red" onClick={() => handleDelete(service._id)}>Delete</Button>
-                    </Stack>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+          <Heading fontSize="2xl" fontWeight="bold" mb="4">Services</Heading>
+          <Button colorScheme="blue" size="md" mb="6" onClick={() => router.push('/services/add')}>Add New Service</Button>
+            <Box w="100%" overflowX="auto" bg="white" shadow={"md"} borderRadius="md" p="4">
+              <Table variant="simple" mt="4">
+                <Thead>
+                  <Tr>
+                    <Th>Image</Th>
+                    <Th>Name</Th>
+                    <Th>Price</Th>
+                    <Th>Availability</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {services.map((service) => (
+                    <Tr key={service._id}>
+                      <Td><img src={service.image} alt={service.name} width="50" /></Td>
+                      <Td>
+                        <Popover onOpen={() => fetchServiceDetail(service._id)}>
+                          <PopoverTrigger>
+                            <Button variant="link" colorScheme="blue">{service.name}</Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <PopoverArrow />
+                            <PopoverCloseButton />
+                            <PopoverHeader fontWeight="bold">{service.name}</PopoverHeader>
+                            <PopoverBody>
+                              {loadingService ? (
+                                <Spinner size="sm" />
+                              ) : selectedService ? (
+                                <>
+                                  <Text>Price: Rp. {selectedService.price.toLocaleString()}</Text>
+                                  <Text>Availability: {selectedService.availability}</Text>
+                                  <Text>Working Days: {selectedService.workingTime} days</Text>
+                                  <Text>Description: {selectedService.description}</Text>
+                                  <Text>Revisions: {selectedService.revision}</Text>
+                                </>
+                              ) : (
+                                <Text>No details available</Text>
+                              )}
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Popover>
+                      </Td>
+                      <Td>Rp. {service.price.toLocaleString()}</Td>
+                      <Td>
+                        <Badge size="lg">{service.availability}</Badge>
+                      </Td>
+                      <Td>
+                        <Stack direction="row" spacing="2">
+                          <Button colorScheme="green" onClick={() => router.push(`/services/edit/${service._id}`)}>Edit</Button>
+                          <Button colorScheme="red" onClick={() => handleDelete(service._id)}>Delete</Button>
+                        </Stack>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
         </Box>
       </Layout>
     </>

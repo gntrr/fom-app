@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, FormControl, FormLabel, Input, Textarea, Select, Heading, Spinner, Image, useToast, Grid, GridItem, Icon } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, Textarea, Select, Heading, Spinner, Image, useToast, Grid, GridItem, Icon, SimpleGrid } from '@chakra-ui/react';
 import withAuth from '../../../components/withAuth';
 import Layout from '../../../components/Layout';
 import Head from 'next/head';
@@ -110,14 +110,14 @@ const EditService = () => {
                 <Heading fontSize="2xl" ml="4">Edit Service</Heading>
             </Box>
             <form onSubmit={handleSubmit}>
-                <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+                <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4} w={{ base: '100%', md: '50%' }} mt="8">
                     <GridItem colSpan={2}>
                         <FormControl mb="4">
                             <FormLabel>Name</FormLabel>
                             <Input name="name" value={form.name} onChange={handleChange} required />
                         </FormControl>
                     </GridItem>
-                    <GridItem>
+                    <GridItem colSpan={{ base: 2, lg: 1 }}>
                         <FormControl mb="4">
                             <FormLabel>Image Thumbnail</FormLabel>
                             <Input type="file" accept="image/*" onChange={handleImageChange} />
@@ -127,7 +127,7 @@ const EditService = () => {
                             {imageUploading && <Spinner size="sm" mt="2" />}
                         </FormControl>
                     </GridItem>
-                    <GridItem>
+                    <GridItem colSpan={{ base: 2, lg: 1 }}>
                         <FormControl mb="4">
                             <FormLabel>Price (Rp)</FormLabel>
                             <Input type="number" name="price" value={form.price} onChange={handleChange} required />
@@ -139,19 +139,19 @@ const EditService = () => {
                             <Textarea name="description" value={form.description} onChange={handleChange} required />
                         </FormControl>
                     </GridItem>
-                    <GridItem>
+                    <GridItem colSpan={{ base: 2, lg: 1 }}>
                         <FormControl mb="4">
                             <FormLabel>Revision</FormLabel>
                             <Input type="number" name="revision" value={form.revision} onChange={handleChange} required />
                         </FormControl>
                     </GridItem>
-                    <GridItem>
+                    <GridItem colSpan={{ base: 2, lg: 1 }}>
                         <FormControl mb="4">
                             <FormLabel>Working Days</FormLabel>
                             <Input type="number" name="workingTime" value={form.workingTime} onChange={handleChange} required />
                         </FormControl>
                     </GridItem>
-                    <GridItem>
+                    <GridItem colSpan={{ base: 2, lg: 1 }}>
                         <FormControl mb="4">
                             <FormLabel>Availability</FormLabel>
                             <Select name="availability" value={form.availability} onChange={handleChange}>
@@ -160,9 +160,9 @@ const EditService = () => {
                             </Select>
                         </FormControl>
                     </GridItem>
-                </Grid>
-              <Button type="submit" colorScheme="blue" mt="6" isLoading={loading}>Update Service</Button>
-            </form>
+                  </SimpleGrid>
+                <Button type="submit" colorScheme="blue" mt="6" isLoading={loading}>Update Service</Button>
+              </form>
           </Box>
         </Layout>
       </>

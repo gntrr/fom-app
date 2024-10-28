@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, FormControl, FormLabel, Input, Textarea, Select, Heading, Icon, Grid, GridItem, Spinner, Image, useToast } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, Textarea, Select, Heading, Icon, SimpleGrid, GridItem, Spinner, Image, useToast } from '@chakra-ui/react';
 import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
@@ -96,7 +96,7 @@ const AddService = () => {
             <Heading fontSize="2xl" ml="4">Add New Service</Heading>
           </Box>
           <form onSubmit={handleSubmit}>
-            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+            <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4} w={{ base: '100%', md: '50%' }} mt="8">
               {/* Name */}
               <GridItem colSpan={2}>
                 <FormControl mb="4">
@@ -106,7 +106,7 @@ const AddService = () => {
               </GridItem>
 
               {/* Image Upload */}
-              <GridItem>
+              <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <FormControl mb="4">
                   <FormLabel>Thumbnail Image</FormLabel>
                   <Input type="file" accept="image/*" onChange={handleImageChange} />
@@ -118,7 +118,7 @@ const AddService = () => {
               </GridItem>
 
               {/* Price */}
-              <GridItem>
+              <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <FormControl mb="4">
                   <FormLabel>Price (Rp)</FormLabel>
                   <Input type="number" name="price" onChange={handleChange} required />
@@ -134,7 +134,7 @@ const AddService = () => {
               </GridItem>
 
               {/* Revision */}
-              <GridItem>
+              <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <FormControl mb="4">
                   <FormLabel>Revision</FormLabel>
                   <Input type="number" name="revision" onChange={handleChange} required />
@@ -142,7 +142,7 @@ const AddService = () => {
               </GridItem>
 
               {/* Working Time */}
-              <GridItem>
+              <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <FormControl mb="4">
                   <FormLabel>Working Days</FormLabel>
                   <Input type="number" name="workingTime" onChange={handleChange} required />
@@ -150,7 +150,7 @@ const AddService = () => {
               </GridItem>
 
               {/* Availability */}
-              <GridItem>
+              <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <FormControl mb="4">
                   <FormLabel>Availability</FormLabel>
                   <Select name="availability" onChange={handleChange}>
@@ -159,7 +159,7 @@ const AddService = () => {
                   </Select>
                 </FormControl>
               </GridItem>
-            </Grid>
+            </SimpleGrid>
 
             <Button type="submit" colorScheme="blue" mt="6" width={{ base: "full", md: "200px" }}>Add Service</Button>
           </form>
