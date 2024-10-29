@@ -13,8 +13,18 @@ import {
   IconButton,
   useToast,
   HStack,
+  Badge,
+  Popover,
+  PopoverTrigger,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  Text,
+  Icon,
 } from '@chakra-ui/react';
-import { FiEdit, FiTrash2, FiPlus, FiPhone, FiPhoneCall, FiMessageCircle } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiPlus, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
@@ -27,9 +37,9 @@ const OrderList = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await fetch('/api/orders', 
-        { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-      );
+      const response = await fetch('/api/orders', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      });
       const data = await response.json();
       setOrders(data);
     };
@@ -38,18 +48,18 @@ const OrderList = () => {
 
   const handleDelete = async (id) => {
     const result = await showConfirmationAlert('Delete This Order?', 'This action cannot be undone, so think twice before deleting.');
-    if (!result.isConfirmed) return
+    if (!result.isConfirmed) return;
 
     const response = await fetch(`/api/orders/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
     });
 
     if (response.ok) {
-        setOrders(orders.filter((order) => order._id !== id));
-        showSuccessAlert('Deleted!', 'The order has been deleted.');
+      setOrders(orders.filter((order) => order._id !== id));
+      showSuccessAlert('Deleted!', 'The order has been deleted.');
     } else {
-        showErrorAlert('Error', 'Failed to delete the order.');
+      showErrorAlert('Error', 'Failed to delete the order.');
     }
   };
 
@@ -73,52 +83,77 @@ const OrderList = () => {
               Add Order
             </Button>
           </HStack>
-          <Box w="100%" overflowX="auto" bg="white" shadow={"md"} borderRadius="md" p="4">
+          <Box w="100%" overflowX="auto" bg="white" shadow="md" borderRadius="md" p="4">
             <Table variant="simple">
-                <Thead>
+              <Thead>
                 <Tr>
-                    <Th>Trx Number</Th>
-                    <Th>Name</Th>
-                    <Th>Service</Th>
-                    <Th>Price</Th>
-                    <Th>Status</Th>
-                    <Th>Actions</Th>
+                  <Th>Trx Number</Th>
+                  <Th>Cust. Name</Th>
+                  <Th>Service</Th>
+                  <Th>Brief</Th>
+                  <Th>Price</Th>
+                  <Th>Status</Th>
+                  <Th>Actions</Th>
                 </Tr>
-                </Thead>
-                <Tbody>
+              </Thead>
+              <Tbody>
                 {orders.map((order) => (
-                    <Tr key={order._id}>
+                  <Tr key={order._id}>
                     <Td>{order.transactionNumber}</Td>
                     <Td>{order.name}</Td>
-                    <Td>{order.services}</Td>
-                    <Td>Rp {order.price.toLocaleString()}</Td>
-                    <Td>{order.status}</Td>
+                    <Td>{order.services.name}</Td>
                     <Td>
-                        <HStack spacing="2">
-                        <IconButton
-                            icon={<FiEdit />}
-                            aria-label="Edit"
-                            onClick={() => router.push(`/orders/edit/${order._id}`)}
-                        />
-                        <IconButton
-                            icon={<FiTrash2 />}
-                            aria-label="Delete"
-                            colorScheme="red"
-                            onClick={() => handleDelete(order._id)}
-                        />
-                        <IconButton
-                            icon={<FiMessageCircle />}
-                            aria-label="Chat"
-                            colorScheme="blue"
-                            onClick={() => <a href={`https://wa.me/${order.whatsappNumber}`} target="_blank" />}
-                        />
-                        </HStack>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button size="sm">View</Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>Order Brief</PopoverHeader>
+                          <PopoverBody mb={2} mt={2}>
+                            <Text fontWeight="bold">Brief:</Text>
+                            <Text mb={6}>{order.brief}</Text>
+                            <Text fontWeight="bold" mb={2}>Brief Document:</Text>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(order.uploadedFile, '_blank')}
+                            >
+                              <Icon as={FiDownload} mr={1} /> Download
+                            </Button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
                     </Td>
-                    </Tr>
+                    <Td>Rp {order.price.toLocaleString()}</Td>
+                    <Td><Badge>{order.status}</Badge></Td>
+                    <Td>
+                      <HStack spacing="2">
+                        <IconButton
+                          icon={<FiEdit />}
+                          aria-label="Edit"
+                          onClick={() => router.push(`/orders/edit/${order._id}`)}
+                        />
+                        <IconButton
+                          icon={<FiTrash2 />}
+                          aria-label="Delete"
+                          colorScheme="red"
+                          onClick={() => handleDelete(order._id)}
+                        />
+                        <IconButton
+                          icon={<FiMessageCircle />}
+                          aria-label="Chat"
+                          colorScheme="blue"
+                          onClick={() => window.open(`https://wa.me/${order.whatsappNumber}`, '_blank')}
+                        />
+                      </HStack>
+                    </Td>
+                  </Tr>
                 ))}
-                </Tbody>
+              </Tbody>
             </Table>
-            </Box>
+          </Box>
         </Box>
       </Layout>
     </>

@@ -4,7 +4,7 @@ interface Order extends Document {
   transactionNumber: string;
   name: string;
   whatsappNumber: string;
-  services: string;
+  services: mongoose.Schema.Types.ObjectId; // Reference to Service model
   brief: string;
   uploadedFile?: string;
   deadline: Date;
@@ -16,7 +16,7 @@ const OrderSchema = new mongoose.Schema<Order>({
   transactionNumber: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   whatsappNumber: { type: String, required: true },
-  services: { type: String, required: true },
+  services: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true }, // Reference to Service model
   brief: { type: String, required: true },
   uploadedFile: { type: String },
   deadline: { type: Date, required: true },

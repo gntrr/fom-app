@@ -147,7 +147,7 @@ const AddOrder = () => {
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4} w={{ base: '100%', md: '50%' }} mt="8">
                 <GridItem colSpan={{ base: 2, lg: 1 }}>
                     <FormControl mb="4">
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Cust. Name</FormLabel>
                         <Input name="name" onChange={handleChange} required />
                     </FormControl>
                 </GridItem>

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../utils/dbConnect';
 import Order from '../../../models/Order';
+import Service from '../../../models/Service';
 import { authenticateToken } from '../../../utils/authMiddleware';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -8,7 +9,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (req.method) {
     case 'GET':
-      const orders = await Order.find();
+      const orders = await Order.find({})
+        .populate({ path: 'services', model: Service, select: 'name price' }) // Explicitly specifying model
+        .exec();
       res.status(200).json(orders);
       break;
 

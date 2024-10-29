@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Text, Button } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Text, Button, Badge } from '@chakra-ui/react';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../utils/alerts';
 
 const OrderList = () => {
@@ -56,8 +56,10 @@ const OrderList = () => {
             <Tr key={order._id}>
               <Td>{order.transactionNumber}</Td>
               <Td>{order.name}</Td>
-              <Td>{order.services}</Td>
-              <Td>{order.status}</Td>
+              <Td>{order.services.name}</Td>
+              <Td>
+                <Badge>{order.status}</Badge>
+                </Td>
               <Td>
                 <Button colorScheme="red" size="sm" onClick={() => deleteOrder(order._id)}>
                   Delete

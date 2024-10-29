@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../utils/dbConnect';
 import Order from '../../../models/Order';
+import Service from '../../../models/Service';
 import { authenticateToken } from '../../../utils/authMiddleware';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -10,7 +11,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case 'GET': // Get a specific order by ID
       try {
-        const order = await Order.findById(id);
+        const order = await Order.findById(id)
+          .populate({ path: 'services', model: Service, select: 'name price' }) // Explicitly specifying model
+          .exec();
         if (!order) {
           return res.status(404).json({ message: 'Order not found' });
         }
@@ -22,7 +25,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'PUT': // Update an order by ID
       try {
-        const updatedOrder = await Order.findByIdAndUpdate(id, req.body, { new: true });
+        const updatedOrder = await Order.findByIdAndUpdate(id, req.body, { new: true })
+          .populate({ path: 'services', model: Service, select: 'name price' }) // Explicitly specifying model
+          .exec();
         if (!updatedOrder) {
           return res.status(404).json({ message: 'Order not found' });
         }
