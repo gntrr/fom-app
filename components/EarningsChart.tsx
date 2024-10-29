@@ -23,7 +23,7 @@ const EarningsChart = () => {
 
   return (
     <>
-    <Box w="100%" h="300px" bg="white" boxShadow="md" borderRadius="md" p="4">
+    <Box w="100%" h="300px" bg="white" boxShadow="md" borderRadius="md" pr={4} py={4}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

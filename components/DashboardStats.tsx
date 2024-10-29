@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { SimpleGrid, Stat, StatLabel, StatNumber, Card } from '@chakra-ui/react';
+import { SimpleGrid, Stat, StatLabel, StatNumber, Card, Box, HStack, Icon } from '@chakra-ui/react';
 import axios from 'axios';
+import { HiCurrencyDollar, HiCube, HiShoppingBag } from "react-icons/hi";
 
 const DashboardStats = () => {
   const [stats, setStats] = useState({
@@ -13,7 +14,8 @@ const DashboardStats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('/api/dashboard-stats', {
+        const timezoneOffset = new Date().getTimezoneOffset();
+        const response = await axios.get(`/api/dashboard-stats?timezoneOffset=${timezoneOffset}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setStats(response.data);
@@ -30,7 +32,12 @@ const DashboardStats = () => {
       {/* Total Orders */}
       <Card p="4" boxShadow="lg">
         <Stat>
-          <StatLabel>Total Orders</StatLabel>
+          <HStack justify="space-between">
+            <StatLabel>Total Orders</StatLabel>
+            <Icon color="gray.600" fontSize={24} >
+              <HiShoppingBag />
+            </Icon>
+          </HStack>
           <StatNumber>{stats.totalOrders}</StatNumber>
         </Stat>
       </Card>
@@ -38,7 +45,12 @@ const DashboardStats = () => {
       {/* Daily Earnings */}
       <Card p="4" boxShadow="lg">
         <Stat>
-          <StatLabel>Daily Earnings</StatLabel>
+          <HStack justify="space-between">
+            <StatLabel>Daily Earnings</StatLabel>
+            <Icon color="gray.600" fontSize={24} >
+              <HiCurrencyDollar />
+            </Icon>
+          </HStack>
           <StatNumber>Rp. {stats.dailyEarnings.toLocaleString()}</StatNumber>
         </Stat>
       </Card>
@@ -46,7 +58,12 @@ const DashboardStats = () => {
       {/* Monthly Earnings */}
       <Card p="4" boxShadow="lg">
         <Stat>
-          <StatLabel>Monthly Earnings</StatLabel>
+          <HStack justify="space-between">
+            <StatLabel>Monthly Earnings</StatLabel>
+            <Icon color="gray.600" fontSize={24} >
+              <HiCurrencyDollar />
+            </Icon>
+          </HStack>
           <StatNumber>Rp. {stats.monthlyEarnings.toLocaleString()}</StatNumber>
         </Stat>
       </Card>
@@ -54,7 +71,12 @@ const DashboardStats = () => {
       {/* Total Services */}
       <Card p="4" boxShadow="lg">
         <Stat>
-          <StatLabel>Total Services</StatLabel>
+          <HStack justify="space-between">
+            <StatLabel>Total Services</StatLabel>
+            <Icon color="gray.600" fontSize={24} >
+              <HiCube />
+            </Icon>
+          </HStack>
           <StatNumber>{stats.totalServices}</StatNumber>
         </Stat>
       </Card>

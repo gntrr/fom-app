@@ -30,13 +30,17 @@ const Dashboard = () => {
         >
           {/* Earnings Chart - Takes full width on mobile, half on desktop */}
           <GridItem w="100%">
-            <Text fontSize="xl" fontWeight="bold" mb="6" mt="6">Earning Chart</Text>
+            <Text fontSize="xl" fontWeight="bold" mb="6" mt="6">Earning Chart
+              <Text fontSize="sm" color="gray.500">Month by Month</Text>
+            </Text>
             <EarningsChart />
           </GridItem>
 
           {/* Order List - Takes full width on mobile, half on desktop */}
           <GridItem w="100%">
-            <Text fontSize="xl" fontWeight="bold" mb="6" mt="6">Recent Orders</Text>
+            <Text fontSize="xl" fontWeight="bold" mb="6" mt="6">Recent Orders
+              <Text fontSize="sm" color="gray.500">Last 5 Orders </Text>
+            </Text>
             <OrderList />
           </GridItem>
         </SimpleGrid>
