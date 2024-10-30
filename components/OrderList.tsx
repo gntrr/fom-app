@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Text, Button, Badge } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Button, Badge } from '@chakra-ui/react';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../utils/alerts';
 
 const OrderList = () => {

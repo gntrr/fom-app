@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SimpleGrid, Stat, StatLabel, StatNumber, Card, Box, HStack, Icon } from '@chakra-ui/react';
+import { SimpleGrid, Stat, StatLabel, StatNumber, Card, HStack, Icon } from '@chakra-ui/react';
 import axios from 'axios';
 import { HiCurrencyDollar, HiCube, HiShoppingBag } from "react-icons/hi";
 
