@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Box } from '@chakra-ui/react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const EarningsChart = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    const token = Cookies.get('token');
     const fetchEarnings = async () => {
       try {
         const response = await axios.get('/api/earnings', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setData(response.data);
       } catch (error) {

@@ -13,6 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../utils/alerts';
+import Cookies from 'js-cookie';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_USER_PRESET // Replace with your Cloudinary upload preset
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME // Replace with your Cloudinary cloud name
@@ -29,6 +30,7 @@ const UpdateProfileForm = ({ user, onUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const toast = useToast();
+  const token = Cookies.get('token');
 
   const handleImageUpload = async () => {
     setImageUploading(true);
@@ -65,7 +67,7 @@ const UpdateProfileForm = ({ user, onUpdate }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ ...formData, profileImage: imageUrl }),
     });

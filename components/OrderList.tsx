@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box, Button, Badge } from '@chakra-ui/react';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../utils/alerts';
+import Cookies from 'js-cookie';
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
+  const token = Cookies.get('token');
 
   useEffect(() => {
     fetch('/api/orders', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Authorization': `Bearer ${token}`}
     })
       .then((response) => response.json())
       .then((data) => setOrders(data))
@@ -21,7 +23,7 @@ const OrderList = () => {
           // Perform delete request here
           fetch(`/api/orders/${orderId}`, { 
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            headers: { 'Authorization': `Bearer ${token}`}
           })
             .then((response) => {
               if (response.ok) {

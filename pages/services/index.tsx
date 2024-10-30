@@ -6,12 +6,14 @@ import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../utils/alerts';
+import Cookies from 'js-cookie';
 
 const ServicesList = () => {
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null); // State to hold selected service data
   const [loadingService, setLoadingService] = useState(false); // Loading state for service details
   const router = useRouter();
+  const token = Cookies.get('token');
 
   useEffect(() => {
     fetchServices();
@@ -19,7 +21,7 @@ const ServicesList = () => {
 
   const fetchServices = async () => {
     const response = await fetch('/api/services', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Authorization': `Bearer ${token}` },
     });
     const data = await response.json();
     setServices(data);
@@ -28,7 +30,7 @@ const ServicesList = () => {
   const fetchServiceDetail = async (id) => {
     setLoadingService(true);
     const response = await fetch(`/api/services/${id}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Authorization': `Bearer ${token}` },
     });
     const data = await response.json();
     setSelectedService(data);
@@ -41,7 +43,7 @@ const ServicesList = () => {
         if (result.isConfirmed) {
           fetch(`/api/services/${id}`, {
               method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+              headers: { 'Authorization': `Bearer ${token}` }
           })
             .then((response) => {
               if (response.ok) {

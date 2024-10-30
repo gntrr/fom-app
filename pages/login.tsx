@@ -17,6 +17,7 @@ import {
 import { showErrorAlert } from '../utils/alerts';
 import React from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     if (token) {
       router.push('/'); // Redirect to dashboard if already logged in
     }
@@ -45,7 +46,7 @@ const Login = () => {
 
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem('token', data.token); // Store JWT in localStorage
+      Cookies.set('token', data.token, { expires: 1 }); // Store for 1 day
       router.push('/');
     } else {
       showErrorAlert('Login Failed', 'Invalid credentials, please try again.');

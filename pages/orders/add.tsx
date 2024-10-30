@@ -24,10 +24,12 @@ import Head from 'next/head';
 import { generateTransactionNumber } from '../../utils/generateTransactionNumber';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../utils/alerts';
 import { LuChevronLeft } from 'react-icons/lu';
+import Cookies from 'js-cookie';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_BRIEF_PRESET; // Replace with your Cloudinary upload preset
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME; // Replace with your Cloudinary cloud name
 
+const token = Cookies.get('token');
 const AddOrder = () => {
   const [form, setForm] = useState({
     name: '',
@@ -49,7 +51,7 @@ const AddOrder = () => {
   useEffect(() => {
     const fetchServices = async () => {
       const response = await fetch('/api/services', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
       setServices(data);
@@ -118,7 +120,7 @@ const AddOrder = () => {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ ...form, transactionNumber }),
     });

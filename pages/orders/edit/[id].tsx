@@ -23,6 +23,7 @@ import Layout from '../../../components/Layout';
 import Head from 'next/head';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import { LuChevronLeft } from 'react-icons/lu';
+import Cookies from 'js-cookie';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_BRIEF_PRESET; // Replace with your Cloudinary upload preset
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME; // Replace with your Cloudinary cloud name
@@ -46,6 +47,7 @@ const EditOrder = () => {
   const router = useRouter();
   const toast = useToast();
   const { id } = router.query;
+  const token = Cookies.get('token');
 
   useEffect(() => {
     if (id) {
@@ -57,7 +59,7 @@ const EditOrder = () => {
   const fetchOrder = async () => {
     try {
       const response = await fetch(`/api/orders/${id}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
       if (response.ok) {
@@ -73,7 +75,7 @@ const EditOrder = () => {
 
   const fetchServices = async () => {
     const response = await fetch('/api/services', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
     setServices(data);
@@ -137,7 +139,7 @@ const EditOrder = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(form),
     });

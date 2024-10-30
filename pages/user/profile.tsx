@@ -6,6 +6,7 @@ import Layout from '../../components/Layout';
 import { Box, Text, Avatar, VStack, Stack } from '@chakra-ui/react';
 import Head from 'next/head';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../utils/alerts';
+import Cookies from 'js-cookie';
 
 const UserProfile = () => {
   const [user, setUser] = useState({ name: '', email: '', profileImage: '' });
@@ -14,7 +15,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         if (!token) throw new Error('No token found');
 
         const response = await fetch('/api/user/profile', {

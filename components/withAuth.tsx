@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import LoadingScreen from './LoadingScreen';
+import Cookies from 'js-cookie';
 
 const withAuth = (WrappedComponent) => {
   const Wrapper = (props) => {
@@ -9,7 +10,7 @@ const withAuth = (WrappedComponent) => {
 
     useEffect(() => {
       const checkAuth = async () => {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
 
         if (!token) {
           // If no token is found, redirect to login
@@ -24,7 +25,7 @@ const withAuth = (WrappedComponent) => {
 
             if (response.status === 401) {
               // If the response status is 401, reset the token and redirect to login
-              localStorage.removeItem('token');
+              Cookies.remove('token');
               router.replace('/login');
             } else if (response.ok) {
               // If the response is ok, set authenticated to true

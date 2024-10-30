@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+// pages/orders/index.tsx
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -11,7 +11,6 @@ import {
   Td,
   Heading,
   IconButton,
-  useToast,
   HStack,
   Badge,
   Popover,
@@ -29,34 +28,25 @@ import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../utils/alerts';
+import cookies from 'next-cookies';
 
-const OrderList = () => {
-  const [orders, setOrders] = useState([]);
+const OrderList = ({ orders }) => {
   const router = useRouter();
-  const toast = useToast();
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const response = await fetch('/api/orders', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-      });
-      const data = await response.json();
-      setOrders(data);
-    };
-    fetchOrders();
-  }, []);
 
   const handleDelete = async (id) => {
-    const result = await showConfirmationAlert('Delete This Order?', 'This action cannot be undone, so think twice before deleting.');
+    const result = await showConfirmationAlert(
+      'Delete This Order?',
+      'This action cannot be undone, so think twice before deleting.'
+    );
     if (!result.isConfirmed) return;
 
     const response = await fetch(`/api/orders/${id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { Authorization: `Bearer ${Cookies.get('token')}` },
     });
 
     if (response.ok) {
-      setOrders(orders.filter((order) => order._id !== id));
+      router.replace(router.asPath); // Refresh the page to fetch updated orders
       showSuccessAlert('Deleted!', 'The order has been deleted.');
     } else {
       showErrorAlert('Error', 'Failed to delete the order.');
@@ -71,9 +61,7 @@ const OrderList = () => {
       </Head>
       <Layout>
         <Box p="8">
-          <Heading fontSize="2xl" mb="4">
-            Orders
-          </Heading>
+          <Heading fontSize="2xl" mb="4">Orders</Heading>
           <HStack mb="8">
             <Button
               leftIcon={<FiPlus />}
@@ -101,7 +89,7 @@ const OrderList = () => {
                   <Tr key={order._id}>
                     <Td>{order.transactionNumber}</Td>
                     <Td>{order.name}</Td>
-                    <Td>{order.services.name}</Td>
+                    <Td>{order.services?.name || 'N/A'}</Td>
                     <Td>
                       <Popover>
                         <PopoverTrigger>
@@ -111,17 +99,21 @@ const OrderList = () => {
                           <PopoverArrow />
                           <PopoverCloseButton />
                           <PopoverHeader>Order Brief</PopoverHeader>
-                          <PopoverBody mb={2} mt={2}>
+                          <PopoverBody>
                             <Text fontWeight="bold">Brief:</Text>
-                            <Text mb={6}>{order.brief}</Text>
-                            <Text fontWeight="bold" mb={2}>Brief Document:</Text>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => window.open(order.uploadedFile, '_blank')}
-                            >
-                              <Icon as={FiDownload} mr={1} /> Download
-                            </Button>
+                            <Text>{order.brief}</Text>
+                            {order.uploadedFile && (
+                              <>
+                                <Text fontWeight="bold" mt={4}>Brief Document:</Text>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => window.open(order.uploadedFile, '_blank')}
+                                >
+                                  <Icon as={FiDownload} mr={1} /> Download
+                                </Button>
+                              </>
+                            )}
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
@@ -159,5 +151,23 @@ const OrderList = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { token } = cookies(context);
+
+  const response = await fetch(`/api/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const orders = response.ok ? await response.json() : [];
+
+  return {
+    props: {
+      orders,
+    },
+  };
+}
 
 export default withAuth(OrderList);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { SimpleGrid, Stat, StatLabel, StatNumber, Card, HStack, Icon } from '@chakra-ui/react';
 import axios from 'axios';
 import { HiCurrencyDollar, HiCube, HiShoppingBag } from "react-icons/hi";
+import Cookies from 'js-cookie';
 
 const DashboardStats = () => {
   const [stats, setStats] = useState({
@@ -15,8 +16,9 @@ const DashboardStats = () => {
     const fetchStats = async () => {
       try {
         const timezoneOffset = new Date().getTimezoneOffset();
+        const token = Cookies.get('token');
         const response = await axios.get(`/api/dashboard-stats?timezoneOffset=${timezoneOffset}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setStats(response.data);
       } catch (error) {

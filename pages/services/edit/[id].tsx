@@ -7,6 +7,7 @@ import Head from 'next/head';
 import LoadingScreen from '../../../components/LoadingScreen';
 import { LuChevronLeft } from 'react-icons/lu';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
+import Cookies from 'js-cookie';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CDN_SERVICES_PRESET // Replace with your Cloudinary upload preset
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CDN_NAME // Replace with your Cloudinary cloud name
@@ -28,6 +29,7 @@ const EditService = () => {
   const toast = useToast();
   const router = useRouter();
   const { id } = router.query;
+  const token = Cookies.get('token');
 
   useEffect(() => {
     if (id) {
@@ -38,7 +40,7 @@ const EditService = () => {
   const fetchServiceData = async () => {
     setLoading(true);
     const response = await fetch(`/api/services/${id}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Authorization': `Bearer ${token}` },
     });
     const data = await response.json();
     setForm(data);
@@ -82,7 +84,7 @@ const EditService = () => {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Authorization': `Bearer ${token}`
     },
       body: JSON.stringify({ ...form, image: imageUrl }),
     });

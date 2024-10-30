@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { FaUserEdit, FaSignOutAlt } from 'react-icons/fa';  // Import icons for profile and logout
 import { showConfirmationAlert } from '../utils/alerts';
+import Cookies from 'js-cookie';
 
 const Navbar = ({ onOpenSidebar }) => {
   const router = useRouter();
@@ -11,11 +12,12 @@ const Navbar = ({ onOpenSidebar }) => {
 
   useEffect(() => {
     // Fetch the user data (you can replace this with actual API logic)
+    const token = Cookies.get('token');
     const fetchUser = async () => {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('token');
       if (token) {
         const response = await fetch('/api/user/profile', {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { 'Authorization': `Bearer ${token}` },
         });
         const data = await response.json();
         setUser(data);
@@ -29,7 +31,7 @@ const Navbar = ({ onOpenSidebar }) => {
     showConfirmationAlert('Are you sure?', 'You will be logged out.')
       .then((result) => {
         if (result.isConfirmed) {
-          localStorage.removeItem('token');
+          Cookies.remove('token'); // Remove the token from cookies
           router.push('/login');
         }
       });
