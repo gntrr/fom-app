@@ -17,7 +17,7 @@ export const authenticateToken = (handler) => async (req: NextApiRequest, res: N
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    console.log("Token verified successfully:", decoded);
+    // console.log("Token verified successfully:", decoded);
     return handler(req, res);
   } catch (error) {
     console.log("Invalid token:", error);

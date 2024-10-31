@@ -1,3 +1,4 @@
+// pages/api/dashboard-stats.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../utils/dbConnect';
 import Order from '../../models/Order';
@@ -13,19 +14,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     // Adjust the current date based on timezone offset
     const currentDate = new Date(Date.now() - offsetInMillis);
-    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));
 
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    // Calculate the start and end of the previous month based on the user's timezone
+    const startOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    const endOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+    endOfPreviousMonth.setHours(23, 59, 59, 999); // Set to end of day
 
     const totalOrders = await Order.countDocuments();
 
-    const dailyEarnings = await Order.aggregate([
+    // Aggregate earnings for the previous month
+    const previousMonthEarnings = await Order.aggregate([
       {
         $match: {
           status: 'done',
-          deadline: { $gte: startOfDay, $lt: endOfDay },
+          deadline: { $gte: startOfPreviousMonth, $lt: endOfPreviousMonth },
         },
       },
       {
@@ -40,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         $match: {
           status: 'done',
-          deadline: { $gte: startOfMonth, $lt: endOfMonth },
+          deadline: { $gte: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1), $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0) },
         },
       },
       {
@@ -53,9 +55,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const totalServices = await Service.countDocuments();
 
+    console.log('Adjusted Current Date:', currentDate, 'Timezone Offset (hours):', offsetInMillis / (60 * 60 * 1000));
     res.status(200).json({
       totalOrders,
-      dailyEarnings: dailyEarnings[0]?.total || 0,
+      previousMonthEarnings: previousMonthEarnings[0]?.total || 0,
       monthlyEarnings: monthlyEarnings[0]?.total || 0,
       totalServices,
     });

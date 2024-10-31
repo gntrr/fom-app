@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 const DashboardStats = () => {
   const [stats, setStats] = useState({
     totalOrders: 0,
-    dailyEarnings: 0,
+    previousMonthEarnings: 0,
     monthlyEarnings: 0,
     totalServices: 0,
   });
@@ -20,7 +20,7 @@ const DashboardStats = () => {
         const response = await axios.get(`/api/dashboard-stats?timezoneOffset=${timezoneOffset}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setStats(response.data);
+        setStats(response.data);       
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
       }
@@ -35,7 +35,7 @@ const DashboardStats = () => {
       <Card p="4" boxShadow="lg">
         <Stat>
           <HStack justify="space-between">
-            <StatLabel>Total Orders</StatLabel>
+            <StatLabel>Total Orders Finished</StatLabel>
             <Icon color="gray.600" fontSize={24} >
               <HiShoppingBag />
             </Icon>
@@ -48,12 +48,12 @@ const DashboardStats = () => {
       <Card p="4" boxShadow="lg">
         <Stat>
           <HStack justify="space-between">
-            <StatLabel>Daily Earnings</StatLabel>
+            <StatLabel>Last Month Earnings</StatLabel>
             <Icon color="gray.600" fontSize={24} >
               <HiCurrencyDollar />
             </Icon>
           </HStack>
-          <StatNumber>Rp. {stats.dailyEarnings.toLocaleString()}</StatNumber>
+          <StatNumber>Rp. {stats.previousMonthEarnings.toLocaleString()}</StatNumber>
         </Stat>
       </Card>
 
@@ -74,7 +74,7 @@ const DashboardStats = () => {
       <Card p="4" boxShadow="lg">
         <Stat>
           <HStack justify="space-between">
-            <StatLabel>Total Services</StatLabel>
+            <StatLabel>Total Services Available</StatLabel>
             <Icon color="gray.600" fontSize={24} >
               <HiCube />
             </Icon>
