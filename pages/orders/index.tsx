@@ -1,4 +1,4 @@
-// pages/orders/index.tsx
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -11,6 +11,7 @@ import {
   Td,
   Heading,
   IconButton,
+  useToast,
   HStack,
   Badge,
   Popover,
@@ -28,25 +29,36 @@ import withAuth from '../../components/withAuth';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
 import { showConfirmationAlert, showSuccessAlert, showErrorAlert } from '../../utils/alerts';
-import cookies from 'next-cookies';
+import Cookies from 'js-cookie';
 
-const OrderList = ({ orders }) => {
+const OrderList = () => {
+  const [orders, setOrders] = useState([]);
   const router = useRouter();
+  const toast = useToast();
+  const token = Cookies.get('token');
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const response = await fetch('/api/orders', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setOrders(data);
+    };
+    fetchOrders();
+  }, []);
 
   const handleDelete = async (id) => {
-    const result = await showConfirmationAlert(
-      'Delete This Order?',
-      'This action cannot be undone, so think twice before deleting.'
-    );
+    const result = await showConfirmationAlert('Delete This Order?', 'This action cannot be undone, so think twice before deleting.');
     if (!result.isConfirmed) return;
 
     const response = await fetch(`/api/orders/${id}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+      headers: { 'Authorization': `Bearer ${token}` },
     });
 
     if (response.ok) {
-      router.replace(router.asPath); // Refresh the page to fetch updated orders
+      setOrders(orders.filter((order) => order._id !== id));
       showSuccessAlert('Deleted!', 'The order has been deleted.');
     } else {
       showErrorAlert('Error', 'Failed to delete the order.');
@@ -61,7 +73,9 @@ const OrderList = ({ orders }) => {
       </Head>
       <Layout>
         <Box p="8">
-          <Heading fontSize="2xl" mb="4">Orders</Heading>
+          <Heading fontSize="2xl" mb="4">
+            Orders
+          </Heading>
           <HStack mb="8">
             <Button
               leftIcon={<FiPlus />}
@@ -89,7 +103,7 @@ const OrderList = ({ orders }) => {
                   <Tr key={order._id}>
                     <Td>{order.transactionNumber}</Td>
                     <Td>{order.name}</Td>
-                    <Td>{order.services?.name || 'N/A'}</Td>
+                    <Td>{order.services.name}</Td>
                     <Td>
                       <Popover>
                         <PopoverTrigger>
@@ -99,27 +113,28 @@ const OrderList = ({ orders }) => {
                           <PopoverArrow />
                           <PopoverCloseButton />
                           <PopoverHeader>Order Brief</PopoverHeader>
-                          <PopoverBody>
+                          <PopoverBody mb={2} mt={2}>
                             <Text fontWeight="bold">Brief:</Text>
-                            <Text>{order.brief}</Text>
-                            {order.uploadedFile && (
-                              <>
-                                <Text fontWeight="bold" mt={4}>Brief Document:</Text>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => window.open(order.uploadedFile, '_blank')}
-                                >
-                                  <Icon as={FiDownload} mr={1} /> Download
-                                </Button>
-                              </>
-                            )}
+                            <Text mb={6}>{order.brief}</Text>
+                            <Text fontWeight="bold" mb={2}>Brief Document:</Text>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              // Check if there is a file URL available or not
+                              // If not, disable the button
+                              isDisabled={!order.uploadedFile}
+                              onClick={() => window.open(order.uploadedFile, '_blank')}
+                            >
+                              <Icon as={FiDownload} mr={1} /> Download
+                            </Button>
+                            {/* If there is no file URL, show a message */}
+                            {!order.uploadedFile && <Text mt={2} color="gray.500">No file uploaded</Text>}
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
                     </Td>
                     <Td>Rp {order.price.toLocaleString()}</Td>
-                    <Td><Badge>{order.status}</Badge></Td>
+                    <Td><Badge colorScheme="green" size="md">{order.status}</Badge></Td>
                     <Td>
                       <HStack spacing="2">
                         <IconButton
@@ -151,23 +166,5 @@ const OrderList = ({ orders }) => {
     </>
   );
 };
-
-export async function getServerSideProps(context) {
-  const { token } = cookies(context);
-
-  const response = await fetch(`/api/orders`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const orders = response.ok ? await response.json() : [];
-
-  return {
-    props: {
-      orders,
-    },
-  };
-}
 
 export default withAuth(OrderList);

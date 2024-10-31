@@ -1,4 +1,4 @@
-import { Box, Flex, Avatar, Menu, MenuButton, MenuList, MenuItem, Text, Button, IconButton } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Menu, MenuButton, MenuList, MenuItem, Text, Button, IconButton, Icon } from '@chakra-ui/react';
 import { HamburgerIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';

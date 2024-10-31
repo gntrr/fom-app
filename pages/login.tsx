@@ -46,7 +46,10 @@ const Login = () => {
 
     if (response.ok) {
       const data = await response.json();
-      Cookies.set('token', data.token, { expires: 1 }); // Store for 1 day
+      Cookies.set('token', data.token, { 
+        expires: 1,
+        path: '/', // This is important to make the token accessible in all pages
+       });
       router.push('/');
     } else {
       showErrorAlert('Login Failed', 'Invalid credentials, please try again.');
