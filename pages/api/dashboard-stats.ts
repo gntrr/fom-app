@@ -15,6 +15,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     // Adjust the current date based on timezone offset
     const currentDate = new Date(Date.now() - offsetInMillis);
 
+    // For logging, calculate the user's timezone offset in hours and the server's default timezone offset
+    const userTimezoneOffsetHours = offsetInMillis / (60 * 60 * 1000);
+    const serverTimezoneOffsetHours = new Date().getTimezoneOffset() / -60;
+
+    console.log('Adjusted Current Date:', currentDate.toISOString());
+    console.log('User Timezone Offset (hours):', userTimezoneOffsetHours);
+    console.log('Server Timezone Offset (hours):', serverTimezoneOffsetHours);
+
     // Calculate the start and end of the previous month based on the user's timezone
     const startOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const endOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
