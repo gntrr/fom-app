@@ -47,7 +47,7 @@ const Login = () => {
     if (response.ok) {
       const data = await response.json();
       Cookies.set('token', data.token, { 
-        expires: 1,
+        expires: 7, // 7 days
         path: '/', // This is important to make the token accessible in all pages
        });
       router.push('/');
