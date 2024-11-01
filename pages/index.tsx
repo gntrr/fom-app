@@ -41,7 +41,7 @@ const Dashboard = () => {
             <GridItem w="100%">
               <Box mb="6" mt="6">
                 <Text fontSize="xl" fontWeight="bold">Recent Orders</Text>
-                <Text fontSize="sm" color="gray.500">Last 5 Orders</Text>
+                <Text fontSize="sm" color="gray.500">Last 5 Orders Received</Text>
               </Box>
               <OrderList />
             </GridItem>
