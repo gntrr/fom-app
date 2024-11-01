@@ -21,7 +21,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your_jwt_secret', {
-      expiresIn: '1h',
+      expiresIn: '7d',
     });
 
     res.status(200).json({ token, user });
