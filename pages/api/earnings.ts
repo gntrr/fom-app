@@ -9,25 +9,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const earnings = await Order.aggregate([
       {
-        $group: {
-          _id: { $month: '$deadline' },
-          total: { $sum: '$price' },
-        },
+        // Extract the month and year from the deadline field
+        $project: {
+          year: { $year: '$deadline' },
+          month: { $month: '$deadline' },
+          price: 1
+        }
       },
       {
-        $sort: { '_id': 1 },
+        // Group by both year and month
+        $group: {
+          _id: { year: '$year', month: '$month' },
+          total: { $sum: '$price' }
+        }
       },
+      {
+        // Sort by year and month in ascending order
+        $sort: { '_id.year': 1, '_id.month': 1 }
+      }
     ]);
 
+    // Format the result to include month names and years
     const formattedEarnings = earnings.map((earning) => ({
-      month: new Date(0, earning._id - 1).toLocaleString('default', { month: 'short' }),
-      earnings: earning.total,
+      year: earning._id.year,
+      month: new Date(earning._id.year, earning._id.month - 1).toLocaleString('default', { month: 'short' }),
+      earnings: earning.total
     }));
 
     res.status(200).json(formattedEarnings);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching earnings data' });
   }
-}
+};
 
 export default authenticateToken(handler);

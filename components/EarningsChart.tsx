@@ -1,11 +1,35 @@
 import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Box } from '@chakra-ui/react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+// Register chart components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const EarningsChart = () => {
-  const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState<{ labels: string[]; datasets: any[] }>({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -14,7 +38,22 @@ const EarningsChart = () => {
         const response = await axios.get('/api/earnings', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setData(response.data);
+        
+        const labels = response.data.map((item: any) => item.month);
+        const earningsData = response.data.map((item: any) => item.earnings);
+        
+        setChartData({
+          labels,
+          datasets: [
+            {
+              label: 'Earnings',
+              data: earningsData,
+              borderColor: '#8884d8',
+              backgroundColor: 'rgba(136, 132, 216, 0.2)',
+              tension: 0.4,
+            },
+          ],
+        });
       } catch (error) {
         console.error('Error fetching earnings data:', error);
       }
@@ -24,18 +63,31 @@ const EarningsChart = () => {
   }, []);
 
   return (
-    <>
-    <Box w="100%" h="300px" bg="white" boxShadow="md" borderRadius="md" pr={4} py={4}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="earnings" stroke="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
-    </Box></>
+    <Box w="100%" bg="white" boxShadow="md" borderRadius="md" px={2}>
+      <Line
+        data={chartData}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: function (value) {
+                  if (typeof value === 'number') {
+                    return value >= 1000 ? `${value / 1000}K` : value;
+                  }
+                  return value;
+                },
+              },
+            },
+          },
+        }}
+        height={300} // Optional: set height to control aspect ratio
+      />
+    </Box>
   );
 };
 
