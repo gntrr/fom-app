@@ -116,6 +116,9 @@ const OrderList = () => {
                           <PopoverBody mb={2} mt={2}>
                             <Text fontWeight="bold">Brief:</Text>
                             <Text mb={6}>{order.brief}</Text>
+                            <Text fontWeight="bold" mb={2}>Deadline:</Text>
+                            {/* Format the deadline date (e.g., "Wednesday, 1 September 2021") */}
+                            <Text mb={6}>{new Date(order.deadline).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                             <Text fontWeight="bold" mb={2}>Brief Document:</Text>
                             <Button
                               size="sm"

@@ -63,6 +63,8 @@ const EditOrder = () => {
       });
       const data = await response.json();
       if (response.ok) {
+        // Format the deadline to "yyyy-MM-dd" format
+        data.deadline = data.deadline ? new Date(data.deadline).toISOString().split('T')[0] : '';
         setForm(data);
         setFileName(data.uploadedFile ? 'Uploaded file' : '');
       } else {
@@ -71,7 +73,7 @@ const EditOrder = () => {
     } catch (error) {
       showErrorAlert('Failed to fetch order', error.message);
     }
-  };
+  };  
 
   const fetchServices = async () => {
     const response = await fetch('/api/services', {
