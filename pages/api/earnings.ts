@@ -9,6 +9,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const earnings = await Order.aggregate([
       {
+        // Match only orders with status "done"
+        $match: {
+          status: 'done'
+        }
+      },
+      {
         // Extract the month and year from the deadline field
         $project: {
           year: { $year: '$deadline' },
