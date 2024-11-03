@@ -66,32 +66,20 @@ const Navbar = ({ onOpenSidebar }) => {
       <Box flex="1" />
 
       {/* User Info and Dropdown */}
-      <Flex alignItems="center" display={{ base: 'flex', md: 'flex' }} mr={4}>
-        {/* User Avatar */}
-        <Avatar size="sm" src={user.profileImage} name={user.name} />
-        
-        {/* User Name (hidden on mobile) */}
-        <Text
-          ml="4"
-          fontWeight="bold"
-          display={{ base: 'none', md: 'block' }}  // Hidden on mobile
-        >
-          {user.name}
-        </Text>
-
-        {/* Dropdown Menu */}
+      <Flex alignItems="center" display={{ base: 'flex', md: 'flex' }} mr={{ base: '0', md: '4' }}>
         <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<ChevronDownIcon />}
-            variant="ghost"
-            ml="2"
-          />
+          <MenuButton as={Button} variant="ghost" rightIcon={<ChevronDownIcon />}>
+            <Flex alignItems="center">
+              <Avatar size="sm" src={user.profileImage} name={user.name} />
+              <Text ml="3" fontWeight="bold" display={{ base: 'none', md: 'block' }}>
+                {user.name}
+              </Text>
+            </Flex>
+          </MenuButton>
           <MenuList>
             <MenuItem icon={<FaUserEdit />} onClick={() => router.push('/user/profile')}>Edit Profile</MenuItem>
             <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout} color="red.500">
-                Logout
+              Logout
             </MenuItem>
           </MenuList>
         </Menu>
