@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
           ml={{ base: '0', md: '250px' }}  /* Sidebar space on larger screens */
           bg="gray.50"
           overflowY="auto"
-          pt="64px"
+          pt="70px"
         >
           {children}
         </Box>
