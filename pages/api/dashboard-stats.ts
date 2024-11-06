@@ -28,7 +28,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const endOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
     endOfPreviousMonth.setHours(23, 59, 59, 999); // Set to end of day
 
-    const totalOrders = await Order.countDocuments();
+    const totalOrders = await Order.aggregate([
+      {
+        $match: {
+          status: 'done',
+        },
+      },
+      {
+        $count: 'total',
+      },
+    ]);
 
     // Aggregate earnings for the previous month
     const previousMonthEarnings = await Order.aggregate([
@@ -65,7 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.log('Adjusted Current Date:', currentDate, 'Timezone Offset (hours):', offsetInMillis / (60 * 60 * 1000));
     res.status(200).json({
-      totalOrders,
+      totalOrders: totalOrders[0]?.total || 0,
       previousMonthEarnings: previousMonthEarnings[0]?.total || 0,
       monthlyEarnings: monthlyEarnings[0]?.total || 0,
       totalServices,
