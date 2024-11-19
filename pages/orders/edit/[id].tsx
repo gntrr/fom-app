@@ -65,7 +65,10 @@ const EditOrder = () => {
       if (response.ok) {
         // Format the deadline to "yyyy-MM-dd" format
         data.deadline = data.deadline ? new Date(data.deadline).toISOString().split('T')[0] : '';
-        setForm(data);
+        setForm({
+          ...data,
+          services: data.services?._id, // Set the selected service ID
+        });
         setFileName(data.uploadedFile ? 'Uploaded file' : '');
       } else {
         showErrorAlert('Failed to fetch order', data.message || 'An error occurred');
